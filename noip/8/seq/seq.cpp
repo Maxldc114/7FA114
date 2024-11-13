@@ -35,24 +35,25 @@ int read () {
 bool answer (vector < int > &s, int l, int r) {
     int lnum = s[l - 1], rnum = s[r + 1];
     int len = r - l + 1, lh = len >> 1;
-    printf("l:%lld %lld r:%lld %lld\n", l - 1, s[l - 1], r + 1, s[r + 1]);
-    printf("size:%llu\n", s.size());
+    // printf("l:%lld %lld r:%lld %lld\n", l - 1, s[l - 1], r + 1, s[r + 1]);
+    // printf("size:%llu\n", s.size());
     if (rnum - lnum - 1 < len && l != 1 && r != (int)s.size() - 2)
         return false;
     int sum1 = (2 * lnum + len + 1) * len / 2;
     int sum2 = (2 * rnum - len - 1) * len / 2;
     int sum3 = (lh + 1) * lh;
     if (len & 1 == 0) sum3 -= lh;
-    if (sum1 < sum2 && sum1 < sum3) {
-        printf("up\n");
+    if (lnum * rnum > 0) sum3 = inf;
+    if (sum1 <= sum2 && sum1 <= sum3) {
+        // printf("up\n");
         for (int i = l; i <= r; i++)
             s[i] = lnum + i - l + 1;
-    } else if (sum2 < sum1 && sum2 < sum3) {
-        printf("down\n");
+    } else if (sum2 <= sum1 && sum2 <= sum3) {
+        // printf("down\n");
         for (int i = r; i >= l; i--)
             s[i] = rnum + i - r - 1;
     } else {
-        printf("mid\n");
+        // printf("mid %lld %lld %lld\n", sum1, sum2, sum3);
         int mid = (l + r) >> 1;
         s[mid] = 0;
         for (int i = mid + 1; i <= r; i++)
@@ -70,24 +71,27 @@ void all_push (int x) {
     for (int i = 0; i < k; i++)
         a[i].push_back(x);
 }
-void input () {
+bool input () {
     n = read(), k = read();
     all_push(-1);
-    int lst = inf;
     for (int i = 1; i <= n; i++) {
         int x = read();
         a[i % k].push_back(x);
-        if (lst >= x && lst != inf) {
-            printf("Incorrect sequence\n");
-            printf("first kiled\n");
-            return;
-        }
+        int now = a[i % k].size() - 1, lst = now - 1;
+        if (lst && a[i % k][now] <= a[i % k][lst] && a[i % k][lst] != inf)
+            return false;
     }
     all_push(1);
+    return true;
 }
 void solve () {
     init();
-    input();
+    bool flag = input();
+    if (!flag) {
+        printf("Incorrect sequence\n");
+        // printf("first kiled\n");
+        return;
+    }
     for (int i = 0; i < k; i++) {
         int l = 0, r = 0;
         for (int j = 1; j < (int)a[i].size() - 1; j++) {
@@ -96,7 +100,7 @@ void solve () {
             if (a[i][j] != inf && l != 0 && r != 0)
                 if (!answer(a[i], l, r)) {
                     printf("Incorrect sequence\n");
-                    printf("second kiled\n");
+                    // printf("second kiled\n");
                     return;
                 } else l = r = 0;
         }
