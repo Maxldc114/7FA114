@@ -32,13 +32,11 @@ int read () {
         x = x * 10 + c - '0', c = getchar();
     return flag ? -x : x;
 }
-bool answer (vector < int > &s, int l, int r) {
+void answer (vector < int > &s, int l, int r) {
     int lnum = s[l - 1], rnum = s[r + 1];
     int len = r - l + 1, lh = len >> 1;
     // printf("l:%lld %lld r:%lld %lld\n", l - 1, s[l - 1], r + 1, s[r + 1]);
     // printf("size:%llu\n", s.size());
-    if (rnum - lnum - 1 < len && l != 1 && r != (int)s.size() - 2)
-        return false;
     int sum1 = (2 * lnum + len + 1) * len / 2;
     int sum2 = (2 * rnum - len - 1) * len / 2;
     int sum3 = (lh + 1) * lh;
@@ -61,7 +59,6 @@ bool answer (vector < int > &s, int l, int r) {
         for (int i = mid - 1; i >= l; i--)
             s[i] = i - mid;
     }
-    return true;
 }
 void init () {
     for (int i = 0; i < k; i++)
@@ -71,42 +68,42 @@ void all_push (int x) {
     for (int i = 0; i < k; i++)
         a[i].push_back(x);
 }
-bool input () {
+void input () {
     n = read(), k = read();
     all_push(-1);
-    for (int i = 1; i <= n; i++) {
-        int x = read();
-        a[i % k].push_back(x);
-        int now = a[i % k].size() - 1, lst = now - 1;
-        if (lst && a[i % k][now] <= a[i % k][lst] && a[i % k][lst] != inf)
-            return false;
-    }
+    for (int i = 1; i <= n; i++)
+        a[i % k].push_back(read());
     all_push(1);
-    return true;
 }
 void solve () {
     init();
-    bool flag = input();
-    if (!flag) {
-        printf("Incorrect sequence\n");
-        // printf("first kiled\n");
-        return;
-    }
+    input();
     for (int i = 0; i < k; i++) {
         int l = 0, r = 0;
         for (int j = 1; j < (int)a[i].size() - 1; j++) {
             if (a[i][j] == inf && l == 0) l = j;
             if (a[i][j] == inf && l != 0) r = j;
             if (a[i][j] != inf && l != 0 && r != 0)
-                if (!answer(a[i], l, r)) {
-                    printf("Incorrect sequence\n");
-                    // printf("second kiled\n");
-                    return;
-                } else l = r = 0;
+                answer(a[i], l, r);
+        }
+    }
+    // for (int i = 0; i < k; i++) {
+    //     for (int j : a[i]) printf("%lld ", j);
+    //     putchar('\n');
+    // }
+    for (int i = 0; i < k; i++) {
+        int lst = -inf;
+        for (int j = 1; j < (int)a[i].size() - 1; j++) {
+            if (a[i][j] <= lst) {
+                printf("Incorrect sequence\n");
+                return;
+            }
+            lst = a[i][j];
         }
     }
     for (int i = 1; i <= n; i++)
-        printf("%lld%c", a[i % k][++cnt[i % k]], " \n"[i == n]);
+        printf("%lld ", a[i % k][++cnt[i % k]]);
+    putchar('\n');
 }
 signed main () {
     int T; scanf("%lld", &T);
