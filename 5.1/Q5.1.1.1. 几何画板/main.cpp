@@ -3,22 +3,42 @@
 #include <string>
 #include <complex>
 #include <iostream>
+typedef double lf;
 using namespace std;
-typedef complex<double> comp;
+const lf PI = 3.14159265358979323846;
+typedef complex<lf> comp;
 struct Edge {
     comp u, v;
 } ;
 const int N = 5e4 + 9;
 int T, cnt;
-double ang[N];
+lf dot (comp x, comp y) {
+    return x.real() * x.imag() + y.real() * y.imag();
+}
+lf cross (comp x, comp y) {
+    return x.real() * y.imag() - x.imag() * y.real();
+}
+lf Abs (comp x) {
+    return sqrt(x.imag() * x.imag() + x.real() * x.real());
+}
+struct Angle {
+    comp x, y;
+    lf cos () {
+        return dot(x, y) / (Abs(x) * Abs(y));
+    }
+    lf sin () {
+        return cross(x, y) / (Abs(x) * Abs(y));
+    }
+} ;
+Angle ang[N];
 comp c[N];
 Edge e[N];
 string s;
-double S(comp x, comp y, comp z) {
+lf S(comp x, comp y, comp z) {
     comp a = y - x, b = z - x;
-    return a.real() * b.imag() - a.imag() * b.real();
+    return cross(a, b);
 }
-double dist(comp x, comp y) {
+lf dist(comp x, comp y) {
     comp a = x - y;
     return sqrt(a.real() * a.real() + a.imag() * a.imag());
 }
@@ -27,11 +47,12 @@ int main() {
     // cin.tie(0);
     freopen("4.in", "r", stdin);
     freopen("ans.txt", "w", stdout);
+    // printf("sin45:%.10lf\n", sin(45.0 * PI / 180.0));
     scanf("%d", &T);
     for (int i = 1; i <= T; i++) {
         cin >> s;
         if (s == "point") {
-            double x, y;
+            lf x, y;
             scanf("%lf%lf", &x, &y);
             c[i] = { x, y };
         }
@@ -39,12 +60,12 @@ int main() {
             int a, b;
             scanf("%d%d", &a, &b);
             c[i] = c[a] + c[b];
-            printf("%.10lf %.10lf\n", c[i].real(), c[i].imag());
+            printf("%.10llf %.10llf\n", c[i].real(), c[i].imag());
         }
         if (s == "area") {
             int x, y, z;
             scanf("%d%d%d", &x, &y, &z);
-            printf("%.10lf\n", S(c[x], c[y], c[z]) / 2);
+            printf("%.10lf\n", S(c[x], c[y], c[z]) / 2.0);
         }
         if (s == "line") {
             int u, v;
@@ -59,23 +80,23 @@ int main() {
         if (s == "perp") {
             int x, y;
             scanf("%d%d", &x, &y);
-            comp a = (e[y].v - e[y].u) * (comp){ 0, 1 } + c[x];
+            comp a = (e[y].v - e[y].u) * (comp){ 0.0, 1.0 } + c[x];
             e[i] = { c[x], a };
         }
         if (s == "angle") {
             int x, y;
             scanf("%d%d", &x, &y);
-            ang[i] = abs(arg(c[y]) - arg(c[x]));
-            printf("point1:%lf %lf\n", c[x].real(), c[x].imag());
-            printf("point2:%lf %lf\n", c[y].real(), c[y].imag());
+            ang[i] = {c[x], c[y]};
+            // printf("point1:%.10lf %.10lf\n", c[x].real(), c[x].imag());
+            // printf("point2:%.10lf %.10lf\n", c[y].real(), c[y].imag());
         }
         if (s == "rotate") {
             int x, y, z;
             scanf("%d%d%d", &x, &y, &z);
-            printf("point1:%lf %lf\n", c[x].real(), c[x].imag());
-            printf("point2:%lf %lf\n", c[y].real(), c[y].imag());
-            printf("angle:%lf\n", ang[z]);
-            comp an = {cos(ang[i]), sin(ang[i])};
+            printf("point1:%.10lf %.10lf\n", c[x].real(), c[x].imag());
+            printf("point2:%.10lf %.10lf\n", c[y].real(), c[y].imag());
+            printf("angle:%.10lf %.10lf\n", ang[z].cos(), ang[z].sin());
+            comp an = (comp){ang[z].cos(), ang[z].sin()};
             comp a = c[x] - c[y];
             a *= an;
             c[i] = a + c[y];
