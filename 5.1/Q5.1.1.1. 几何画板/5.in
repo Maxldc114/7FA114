@@ -1,0 +1,31 @@
+30
+point 0.191 0.524
+point -0.515 0.696
+angle 1 2
+point -1.120 0.853
+point 0.405 1.853
+move 1 2
+move 1 2
+area 4 1 7
+move 7 2
+point 1.199 0.270
+area 9 4 2
+area 7 9 2
+point 1.518 -0.211
+point -1.345 0.877
+rotate 5 7 3
+angle 15 1
+rotate 1 15 3
+move 5 9
+rotate 5 4 16
+line 4 9
+perp 2 20
+area 19 13 9
+rotate 19 10 3
+inter 20 21
+point 1.061 0.501
+point -1.895 1.372
+dist 26 21
+perp 18 20
+area 26 9 25
+area 23 25 17

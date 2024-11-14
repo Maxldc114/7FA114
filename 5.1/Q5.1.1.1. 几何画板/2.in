@@ -1,0 +1,31 @@
+30
+point 1.402 0.258
+point -0.298 0.736
+point -1.057 0.569
+area 3 2 1
+move 1 2
+point -0.683 0.806
+move 1 6
+area 2 6 5
+move 3 7
+area 1 6 2
+point 1.217 -1.952
+area 6 3 1
+point -0.181 0.002
+point 0.808 -0.539
+line 6 11
+line 2 9
+line 2 3
+dist 6 17
+point -0.620 0.713
+area 5 11 3
+move 6 7
+area 14 6 13
+move 11 2
+area 5 13 21
+line 19 11
+line 3 13
+move 19 3
+dist 3 17
+move 2 9
+move 11 21
